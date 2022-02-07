@@ -1,7 +1,6 @@
 import folium
 import pandas as pd
 import argparse
-import sys
 import geopy
 
 parser = argparse.ArgumentParser(description='parsing of arguments')
@@ -15,22 +14,36 @@ arguments = parser.parse_args()
 
 def read_file() -> list:
     """
-    Reading the file and returning the list with movies only of the right year.
+    Reading the file and returning the list with movies only of the right lst_with_year.
     :return: list
     """
     path = arguments.file_path
-    lst, ans = [], []
+    lst, lst_with_year, ans, lst_with_no_curly, lst_no_year = [], [], [], [], []
     with open(path, "r", encoding="utf-8") as f:
         lines = f.read().splitlines()
         for i in lines:
+            # making a list of the file and removing extra tabs
             lst.append(i.replace("\t", ""))
         for j in lst:
             if "(" + str(arguments.year) + ")" in j:
-                ans.append(j)
+                # sorting the list by removing the inappropriate year
+                lst_with_year.append(j)
+        for y in lst_with_year:
+            # removing the year
+            lst_no_year.append(y.split(f"({str(arguments.year)}")[0] + y.split(f"{str(arguments.year)})")[1])
+        for k in lst_no_year:
+            if "{" in k and "}" in k:
+                # removing the curly brackets and symbols inside them
+                lst_with_no_curly.append(k.split("{")[0] + k.split("}")[1])
+            else:
+                lst_with_no_curly.append(k)
+        for x in lst_with_no_curly:
+            if "(" in x and ")" in x:
+                ans.append(x.split("(")[0] + x.split(")")[1])
+            # removing the regular brackets and symbols inside them
+            else:
+                ans.append(x)
     return ans
 
 
-def dataframe_maker():
-    pass
-
-
+print(read_file())
