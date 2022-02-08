@@ -64,9 +64,6 @@ def dataframe_maker():
         # splitting the movies and the locations
     df = pd.DataFrame(ans)
     df.rename(columns={0: "Names_of_movies", 1: "Locations"}, inplace=True)
-    pd.set_option('display.max_columns', None)
-    pd.set_option('display.max_rows', None)
-    pd.set_option('display.width', 200)
     try:
         df.drop(columns=2, inplace=True)
         # removing extra columns
@@ -119,11 +116,20 @@ def distance_column():
     return df
 
 
-print(distance_column())
-# python3 main.py 2015 40.712728 -74.006015 "locations.list"
+def map_maker():
+    """
+    Function that makes the map with 10 of the closest locations with films
+    :return: folium map
+    """
+    df = distance_column()
+    names = df["Names_of_movies"]
+    coordinates_tpl = list(zip(list(df["Latitude"]), list(df["Longitude"])))
+    m = folium.Map(location=[float(arguments.latitude), float(arguments.longitude)], zoom_start=4)
+    for i in range(len(coordinates_tpl)):
+        folium.Marker(list(coordinates_tpl[i])).add_to(m)
+    m.save("Map.html")
 
 
-
-
+map_maker()
 
 
