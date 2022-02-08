@@ -127,7 +127,7 @@ def map_maker():
     m = folium.Map(location=[float(arguments.latitude), float(arguments.longitude)], zoom_start=4)
     for i in range(len(coordinates_tpl)):
         folium.Marker(list(coordinates_tpl[i])).add_to(m)
-    m.save("Map.html")
+    m.save("Map1.html")
 
 
 map_maker()
