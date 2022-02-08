@@ -1,7 +1,13 @@
+"""
+Lab project for making a map with the locations of movies of a certain year.
+Gets four arguments: the year of the movies, latitude, longitude and the path to the right file.
+Returns an HTML map with markers on the places of movies.
+"""
 import folium
 import pandas as pd
 import argparse
-import geopy
+from geopy.geocoders import Nominatim
+import haversine
 
 parser = argparse.ArgumentParser(description='parsing of arguments')
 parser.add_argument('year', help='The year of the movies', type=int)
@@ -9,7 +15,6 @@ parser.add_argument('latitude', help='The latitude of the location', type=str)
 parser.add_argument('longitude', help='The longitude of the location', type=str)
 parser.add_argument('file_path', help='Path to the chosen file', type=str)
 arguments = parser.parse_args()
-# python3 main.py 1990 49.83826 24.02324 "loc_short.list
 
 
 def read_file() -> list:
@@ -46,4 +51,79 @@ def read_file() -> list:
     return ans
 
 
-print(read_file())
+def dataframe_maker():
+    """
+    Making a pandas dataframe with two columns: the name of the movie and
+    its shooting location
+    :return: pd.Dataframe
+    """
+    ans = []
+    lst = read_file()
+    for i in lst:
+        ans.append(i.split('" '))
+        # splitting the movies and the locations
+    df = pd.DataFrame(ans)
+    df.rename(columns={0: "Names_of_movies", 1: "Locations"}, inplace=True)
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_rows', None)
+    pd.set_option('display.width', 200)
+    try:
+        df.drop(columns=2, inplace=True)
+        # removing extra columns
+        return df
+    except KeyError:
+        return df
+
+
+def coordinate_columns():
+    """
+    Making two additional columns in the Dataframe with
+    latitude and longitude of the coordinates.
+    :return: pd.Dataframe
+    """
+    df = dataframe_maker()
+    loc = df["Locations"]
+    geolocator = Nominatim(user_agent="PyCharm")
+    latitude, longitude = [], []
+    # has to be changed if another application is used!
+    for i in range(len(loc)):
+        try:
+            location = geolocator.geocode(loc[i])
+            latitude.append(location.latitude)
+            longitude.append(location.longitude)
+        except AttributeError:
+            # in case coordinates cannot be found by the module
+            df.drop(index=[i], inplace=True)
+            continue
+    df["Latitude"] = latitude
+    df["Longitude"] = longitude
+    return df
+
+
+def distance_column():
+    """
+    Adding a distance column to the dataframe
+    which has the haversine distance from the given
+    coordinates to every film location.
+    :return: pd.Dataframe
+    """
+    df = coordinate_columns()
+    lst = []
+    input_coordinates = float(arguments.latitude), float(arguments.longitude)
+    movie_coordinates = list(zip(list(df["Latitude"]), list(df["Longitude"])))
+    # making two coordinate tuples
+    for i in range(len(movie_coordinates)):
+        lst.append(haversine.haversine(input_coordinates, movie_coordinates[i]))
+        # appending the list for the new column
+    df["Distance"] = lst
+    return df
+
+
+print(distance_column())
+# python3 main.py 2015 40.712728 -74.006015 "locations.list"
+
+
+
+
+
+

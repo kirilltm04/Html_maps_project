@@ -1,4 +1,5 @@
-from geopy.geocoders import Nominatim
-geolocator = Nominatim(user_agent="PyCharm")
-location = geolocator.geocode("Fishkill, New York, USA")
-print((location.latitude, location.longitude))
+import haversine
+
+dot1 = (42.986885, 19.518099)
+dot2 = (42.980885, 19.518099)
+print(haversine.haversine(dot1, dot2))
