@@ -7,6 +7,7 @@ import folium
 import pandas as pd
 import argparse
 from geopy.geocoders import Nominatim
+from geopy.exc import GeocoderUnavailable
 import haversine
 
 parser = argparse.ArgumentParser(description='parsing of arguments')
@@ -81,14 +82,14 @@ def coordinate_columns():
     df = dataframe_maker()
     loc = df["Locations"]
     geolocator = Nominatim(user_agent="PyCharm")
-    latitude, longitude = [], []
     # has to be changed if another application is used!
+    latitude, longitude = [], []
     for i in range(len(loc)):
         try:
             location = geolocator.geocode(loc[i])
             latitude.append(location.latitude)
             longitude.append(location.longitude)
-        except AttributeError:
+        except AttributeError or GeocoderUnavailable:
             # in case coordinates cannot be found by the module
             df.drop(index=[i], inplace=True)
             continue
@@ -113,33 +114,39 @@ def distance_column():
         lst.append(haversine.haversine(input_coordinates, movie_coordinates[i]))
         # appending the list for the new column
     df["Distance"] = lst
-    return df.sort_values("Distance")  # .iloc[0:10, :]
+    df = df.sort_values("Distance")
+    df.drop_duplicates(subset="Distance", inplace=True)
+    df = df.iloc[0:10, :]
+    return df
 
 
 def map_maker():
     """
-    Function that makes the map with 10 of the closest locations with films
+    Function that makes the map with 10 of the closest locations with films.
     :return: folium map
     """
     df = distance_column()
     input_coordinates = float(arguments.latitude), float(arguments.longitude)
     coordinates_tpl = list(zip(list(df["Latitude"]), list(df["Longitude"])))
     m = folium.Map(location=[float(arguments.latitude), float(arguments.longitude)], zoom_start=4)
-    fg_sl = folium.FeatureGroup(name="Short location")
-    fg_ll = folium.FeatureGroup(name="Long location")
+    fg_sl = folium.FeatureGroup(name="Short location (<1000km)")
+    fg_ll = folium.FeatureGroup(name="Long location (>1000km)")
+    # making the layers
     for i in range(len(coordinates_tpl)):
         if haversine.haversine(coordinates_tpl[i], input_coordinates) <= 1000:
             fg_sl.add_child(
-                folium.Marker(list(coordinates_tpl[i]), popup=coordinates_tpl[i], icon=folium.Icon(color="red"),
-                              tooltip="Not too far!"))
+                folium.Marker(list(coordinates_tpl[i]),
+                              popup=str(round(haversine.haversine(coordinates_tpl[i], input_coordinates), 3)) + "km",
+                              icon=folium.Icon(color="red"), tooltip="Not too far!"))
         elif haversine.haversine(coordinates_tpl[i], input_coordinates) > 1000:
             fg_ll.add_child(
-                folium.Marker(list(coordinates_tpl[i]), popup=coordinates_tpl[i], icon=folium.Icon(color="orange"),
-                              tooltip="A little bit further!"))
+                folium.Marker(list(coordinates_tpl[i]),
+                              popup=str(round(haversine.haversine(coordinates_tpl[i], input_coordinates), 3)) + "km",
+                              icon=folium.Icon(color="orange"), tooltip="A little bit further!"))
     m.add_child(fg_sl)
     m.add_child(fg_ll)
     m.add_child(folium.LayerControl())
-    m.save("Map3.html")
+    m.save("Map_1.html")
 
 
 map_maker()
