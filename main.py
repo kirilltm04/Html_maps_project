@@ -113,7 +113,7 @@ def distance_column():
         lst.append(haversine.haversine(input_coordinates, movie_coordinates[i]))
         # appending the list for the new column
     df["Distance"] = lst
-    return df
+    return df.sort_values("Distance")  # .iloc[0:10, :]
 
 
 def map_maker():
@@ -122,14 +122,24 @@ def map_maker():
     :return: folium map
     """
     df = distance_column()
-    names = df["Names_of_movies"]
+    input_coordinates = float(arguments.latitude), float(arguments.longitude)
     coordinates_tpl = list(zip(list(df["Latitude"]), list(df["Longitude"])))
     m = folium.Map(location=[float(arguments.latitude), float(arguments.longitude)], zoom_start=4)
+    fg_sl = folium.FeatureGroup(name="Short location")
+    fg_ll = folium.FeatureGroup(name="Long location")
     for i in range(len(coordinates_tpl)):
-        folium.Marker(list(coordinates_tpl[i])).add_to(m)
-    m.save("Map1.html")
+        if haversine.haversine(coordinates_tpl[i], input_coordinates) <= 1000:
+            fg_sl.add_child(
+                folium.Marker(list(coordinates_tpl[i]), popup=coordinates_tpl[i], icon=folium.Icon(color="red"),
+                              tooltip="Not too far!"))
+        elif haversine.haversine(coordinates_tpl[i], input_coordinates) > 1000:
+            fg_ll.add_child(
+                folium.Marker(list(coordinates_tpl[i]), popup=coordinates_tpl[i], icon=folium.Icon(color="orange"),
+                              tooltip="A little bit further!"))
+    m.add_child(fg_sl)
+    m.add_child(fg_ll)
+    m.add_child(folium.LayerControl())
+    m.save("Map3.html")
 
 
 map_maker()
-
-
