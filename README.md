@@ -42,6 +42,14 @@ column of the df (distance between the location and the user's coordinates).
 
 <img width="1785" alt="Screenshot 2022-02-09 at 23 28 12" src="https://user-images.githubusercontent.com/92577092/153293168-0dc7f673-8426-49cd-9be5-91157dcca4e3.png">
 
+## Licence
+
+Licence used in the project is GNU GENERAL PUBLIC LICENSE.
+
+## Support
+
+In case of problems a user may apply on kirill.tumoian@ucu.edu.ua email.
+
 ## Authors and acknowledgement
 
 The project was done by Kirill Tumoian with using the examples given in the laboratory work short statements.
