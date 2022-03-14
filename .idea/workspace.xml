@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a50a6939-c65c-4e27-8e9c-cd44965e6681" name="Changes" comment="" />
+    <list default="true" id="a50a6939-c65c-4e27-8e9c-cd44965e6681" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -31,6 +34,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -103,7 +107,19 @@
       <workItem from="1644265206868" duration="24089000" />
       <workItem from="1644388927570" duration="1781000" />
       <workItem from="1644393424493" duration="738000" />
-      <workItem from="1644396839003" duration="9019000" />
+      <workItem from="1644396839003" duration="9074000" />
+      <workItem from="1644492080451" duration="292000" />
+      <workItem from="1644511969727" duration="355000" />
+      <workItem from="1644955514295" duration="14000" />
+      <workItem from="1644957499856" duration="284000" />
+      <workItem from="1644957934441" duration="10000" />
+      <workItem from="1645010318917" duration="75000" />
+      <workItem from="1645117371404" duration="1566000" />
+      <workItem from="1645185585757" duration="466000" />
+      <workItem from="1645308803740" duration="581000" />
+      <workItem from="1645377934109" duration="74000" />
+      <workItem from="1645456709262" duration="1464000" />
+      <workItem from="1647292082939" duration="815000" />
     </task>
     <servers />
   </component>

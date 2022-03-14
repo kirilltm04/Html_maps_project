@@ -89,8 +89,11 @@ def coordinate_columns():
             location = geolocator.geocode(loc[i])
             latitude.append(location.latitude)
             longitude.append(location.longitude)
-        except AttributeError or GeocoderUnavailable:
+        except GeocoderUnavailable:
             # in case coordinates cannot be found by the module
+            df.drop(index=[i], inplace=True)
+            continue
+        except AttributeError:
             df.drop(index=[i], inplace=True)
             continue
     df["Latitude"] = latitude
